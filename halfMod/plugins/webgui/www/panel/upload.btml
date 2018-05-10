@@ -1,0 +1,11 @@
+#!/bin/bash
+
+ip="$1"
+name="$2"
+flags="$3"
+mark=`./halfMod/plugins/webgui/hex2dec $4`
+port=$5
+
+post=`cat "./halfMod/plugins/webgui/post.${port}"`
+
+echo "<html><body><pre>${post}</pre></body></html>"

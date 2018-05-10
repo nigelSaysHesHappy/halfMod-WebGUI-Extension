@@ -1,0 +1,47 @@
+#!/bin/bash
+
+source ./halfMod/plugins/webgui/handleinput.sh --decode "$@"
+
+set -- $post
+
+while [[ "$1" != "" ]]; do
+    case "$1" in
+        username=*)
+            user=$1
+            user=${user#username=*}
+        ;;
+        psw=*)
+            pass=$1
+            pass=${pass#psw=*}
+        ;;
+    esac
+    shift 1
+done
+
+echo "<html><head>
+  <title>halfMod Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/preset.css">
+  <link href="css/base.css" rel="stylesheet">
+</head><body></br></br></br><center>"
+#echo "Username: $user</br>"
+#echo "Password: $pass</br>"
+
+login=`cat "./halfMod/plugins/webgui/accounts.conf" | grep -E -v "^\s*#.*" | grep -E "^${user}=${pass}=.+"`
+account=${login##*=}
+login=${login%=*}
+#echo "Login: $login :: Acount: $account"
+
+if [[ "${user}=${pass}" == "$login" ]]; then
+    echo "Success! Click <a href=\"/panel/index.btml\">here</a> if your browser does not automatically redirect you.</br>"
+    cookie="${user}=${account}=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)"
+    echo "$cookie" > "./halfMod/plugins/webgui/cookies/${ip}"
+    echo "<script>window.location.replace(\"/panel/index.btml\");</script>"
+else
+    echo "Failed! Click <a href=\"/login.html?error=tryagain\">here</a> if your browser does not automatically redirect you.</br>"
+    rm "./halfMod/plugins/webgui/cookies/${ip}"
+    echo "<script>window.location.replace(\"/login.html?error=tryagain\");</script>"
+fi
+
+echo "</center></body></html>"
+

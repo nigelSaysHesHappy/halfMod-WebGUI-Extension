@@ -1,0 +1,63 @@
+<html>
+
+<head>
+  <title>Control Panel - halfMod Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../css/preset.css">
+  <link href="../css/base.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="-sidebar -card-4 -animate-left" style="width: 180px; display: none; background: #2a2d2d;" id="mySidebar">
+    <div class="-bar" style="background: #2a2d2d; color: #c48321;font-family: 'Roboto', sans-serif;">
+      <span class="-bar-item -padding-16">halfMod Panel</span>
+      <button onclick="_close()" class="-bar-item -button -right -padding-16" style="" title="Close">&#10005;</button>
+    </div>
+    <div class="-bar-block">
+      <a class="-bar-item -button" href="index.btml">Status</a>
+      <a class="-bar-item -button" href="config.html">Config</a>
+      <a class="-bar-item -button" href="console.html">Console</a>
+      <div class="-dropdown-hover">
+        <a class="-button" href="javascript:void(0)">Links <i class="fa fa-caret-down"></i></a>
+        <div class="-dropdown-content -bar-block -card-4">
+          <a class="-bar-item -button" href="[Insert Configurable URL Here]" target="_blank">Server Homepage</a>
+          <a class="-bar-item -button" href="https://nigelSaysHesHappy.github.io/halfMod" target="_blank">halfMod Homepage</a>
+          <a class="-bar-item -button" href="https://github.com/nigelSaysHesHappy/halfMod/issues" target="_blank">Report an Issue</a>
+        </div>
+      </div>
+      <a class="-bar-item -button" href="javascript:void(0)">=====</a>
+    </div>
+  </div>
+  <div id="main" style="margin-left: 0px;">
+    <div class="-container -display-container">
+      <span title="open Sidebar" style="display: inline-block;" id="openNav" class="-button -transparent -display-topleft -xlarge" onclick="_open()">&#9776;</span>
+      <center><div style="height: 5%;"></div></center>
+      <pre class="console_content"><div style="background: #000; height: 85%; padding:5px; overflow-y: scroll; margin:0px; word-break: break-all; word-wrap: break-word; white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -o-pre-wrap;" id="content"></div></pre>
+      <center>
+        <div style="background: #111; height:5%;">
+          <h1><p style="float:left; line-height:0px;margin-top:1%;margin-bottom:5px; margin-left:5px;">&gt;</p></h1>
+            <input type="text" id="input" name="Console Input" style="background: inherit; border: none; color: #c48321; float: left; margin-left: 5px; margin-top: .5%; margin-bottom:1%; width:95% !important; height:80% !important; font-size:1.5em;"><br>
+        </div>
+        </div>
+      </center>
+    </div>
+  </div>
+  <script>
+    function _open() {
+      document.getElementById("main").style.marginLeft = "180px";
+      document.getElementById("mySidebar").style.width = "180px";
+      document.getElementById("mySidebar").style.display = "block";
+      document.getElementById("openNav").style.display = 'none';
+    }
+
+    function _close() {
+      document.getElementById("main").style.marginLeft = "0";
+      document.getElementById("mySidebar").style.display = "none";
+      document.getElementById("openNav").style.display = "inline-block";
+    }
+  </script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="/panel/js/ws.js"></script>
+</body>
+
+</html>

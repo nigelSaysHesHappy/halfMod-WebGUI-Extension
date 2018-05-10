@@ -1,0 +1,78 @@
+#!/bin/bash
+source "./halfMod/plugins/webgui/variables.sh"
+source ./halfMod/plugins/webgui/handleinput.sh "$@"
+echo "
+<html>
+
+<head>
+  <title>Control Panel - HalfMod Panel</title>
+  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
+  <link rel=\"stylesheet\" href=\"../css/preset.css\">
+  <link href=\"../css/base.css\" rel=\"stylesheet\">
+</head>
+
+<body>
+  <div class=\"-sidebar -card-4 -animate-left\" style=\"width: 180px; display: none; background: #2a2d2d;\" id=\"mySidebar\">
+    <div class=\"-bar\" style=\"background: #2a2d2d; color: #c48321;font-family: 'Roboto', sans-serif;\">
+      <span class=\"-bar-item -padding-16\">HalfMod Panel</span>
+      <button onclick=\"_close()\" class=\"-bar-item -button -right -padding-16\" style=\"\" title=\"Close\">&#10005;</button>
+    </div>
+    <div class=\"-bar-block\">
+      <div class=\"-dropdown-hover\">
+        <a class=\"-button\" href=\"javascript:void(0)\">${user}<i class=\"fa fa-caret-down\"></i></a>
+        <div class=\"-dropdown-content -bar-block -card-4\">
+          <a class=\"-bar-item -button\" href=\"javascript:void(0)\">${name}</a>
+          <a class=\"-bar-item -button\" href=\"javascript:void(0)\">Flags: ${flags}</a>
+        </div>
+      </div>
+      <a class=\"-bar-item -button\" href=\"index.html\">Status</a>
+      <a class=\"-bar-item -button\" href=\"config.html\">Config</a>
+      <a class=\"-bar-item -button\" href=\"console.html\">Console</a>
+      <div class=\"-dropdown-hover\">
+        <a class=\"-button\" href=\"javascript:void(0)\">Links <i class=\"fa fa-caret-down\"></i></a>
+        <div class=\"-dropdown-content -bar-block -card-4\">
+          <a class=\"-bar-item -button\" href=\"[Insert Configurable URL Here]\" target=\"_blank\">Server Homepage</a>
+          <a class=\"-bar-item -button\" href=\"https://nigelSaysHesHappy.github.io/halfMod\" target=\"_blank\">HalfMod Homepage</a>
+          <a class=\"-bar-item -button\" href=\"https://github.com/nigelSaysHesHappy/halfMod/issues\" target=\"_blank\">Report an Issue</a>
+        </div>
+      </div>
+      <a class=\"-bar-item -button\" href=\"javascript:void(0)\">=====</a>
+    </div>
+  </div>
+  <div id=\"main\" style=\"margin-left: 0px;\">
+    <div class=\"-container -display-container\">
+      <span title=\"open Sidebar\" style=\"display: inline-block;\" id=\"openNav\" class=\"-button -transparent -display-topleft -xlarge\" onclick=\"_open()\">&#9776;</span>
+      <center>
+        <h3>Status</h3>
+        <center><h1>${hm_version} running Minecraft ${mc_version}</h1><center>
+        <center><h1>Ram Usage: `free -m | awk 'NR==2{printf "%s/%sMB (%.2f%%)\n", $3,$2,$3*100/$2 }'`</h1><center>
+        <center><h1>TPS: [Insert TPS Here]</h1><center>
+        <center><h1>Players Online: [${players_count}/${max_players}]</h1><center>
+        <center><h1><input type=\"submit\" value=\"Kick All\" style=\"background: #c48321; border: none; color: #2a2d2d;\"></h1><center>
+        <center><h1><input type=\"submit\" value=\"[Insert Stop/Start]\" style=\"background: #c48321; border: none; color: #2a2d2d;\"></h1><center>
+      </center>
+      <center>
+        <h1>
+
+        </h1>
+      </center>
+    </div>
+  </div>
+  <script>
+    function _open() {
+      document.getElementById(\"main\").style.marginLeft = \"180px\";
+      document.getElementById(\"mySidebar\").style.width = \"180px\";
+      document.getElementById(\"mySidebar\").style.display = \"block\";
+      document.getElementById(\"openNav\").style.display = 'none';
+    }
+
+    function _close() {
+      document.getElementById(\"main\").style.marginLeft = \"0\";
+      document.getElementById(\"mySidebar\").style.display = \"none\";
+      document.getElementById(\"openNav\").style.display = \"inline-block\";
+    }
+  </script>
+</body>
+
+</html>
+"
