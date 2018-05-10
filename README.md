@@ -4,7 +4,7 @@ Adds a Web Server with Control Panel to halfMod
 # Installation
 Copy the repo into your halfMod installation then run the following commands from the terminal:
 ```sh
-cd src/extensions/webgiu
+cd src/extensions/webgui
 chmod +x build.sh
 ./build.sh
 cd ../../plugins/
