@@ -13,7 +13,7 @@ cd ../../plugins/
 
 # Web Server
 The web server files are hosted in `./halfMod/plugins/webgui/www/`. This is the default index directory of the web server.  
-The web server has support for most protocols.
+The web server has support for most protocols, including websockets. Check out the webgui_console plugin source for an example.
 
 # BTML
 BTML is a file format that aims to replace PHP, any file with this extension is treated as a bash script. It is executed and whatever the script outputs is what is served to the requesting client.
