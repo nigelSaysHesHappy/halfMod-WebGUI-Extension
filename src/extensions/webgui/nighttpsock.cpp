@@ -159,6 +159,7 @@ int nigSock::writeFile(string filename,int flags)
         else if ("swf" == line) line = "application/x-shockwave-flash";
         else if (istok("snd.au",line,".")) line = "audio/basic";
         else if ("wav" == line) line = "audio/wav";
+        else if ("js" == line) line = "application/javascript";
         else if ((line == "") || (line == filename)) line = "text/html";
         else if (istok("btm.btml",line,"."))
         {

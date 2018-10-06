@@ -389,14 +389,9 @@ void webguiRun()
                             sockets[i].cookie = cookie;
                             sockets[i].name = gettok(cookie,2,"=");
                             string tmp = lower(sockets[i].name);
-                            for (vector<hmAdmin>::iterator it = recallGlobal(NULL)->admins.begin(), ite = recallGlobal(NULL)->admins.end();it != ite;++it)
-                            {
-                                if (lower(it->client) == tmp)
-                                {
-                                    sockets[i].playerFlags = it->flags;
-                                    break;
-                                }
-                            }
+                            auto c = recallGlobal(NULL)->admins.find(tmp);
+                            if (c != recallGlobal(NULL)->admins.end())
+                                sockets[i].playerFlags = c->second.flags;
                         }
                         else
                             sockets[i].cookie = "null";

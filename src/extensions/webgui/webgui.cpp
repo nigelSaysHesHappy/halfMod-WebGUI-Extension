@@ -9,7 +9,7 @@
 #include "str_tok.h"
 using namespace std;
 
-#define WEBGUI_VERSION "v0.1.4"
+#define WEBGUI_VERSION "v0.1.3"
 
 struct configButton
 {
@@ -37,9 +37,6 @@ int onExtensionLoad(hmExtension &handle, hmGlobal *global)
                       "halfMod Interactive Server Control Panel",
                       WEBGUI_VERSION,
                       "http://localhost:9001/");
-    mkdirIf("./halfMod/plugins/webgui");
-    mkdirIf("./halfMod/plugins/webgui/www");
-    mkdirIf("./halfMod/plugins/webgui/cookies");
     ifstream file(CONF);
     string bindIP;
     int bindPort;

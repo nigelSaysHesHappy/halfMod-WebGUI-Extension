@@ -3,16 +3,34 @@
 #include "str_tok.h"
 using namespace std;
 
-#define VERSION "v0.1.2"
+#define VERSION "v0.1.3"
 
 static string threadBuffer;
+
+bool keepInvSetting = false;
 
 static void (*sendToEndPoint)(string,string);
 static void (*sendToSocket)(int,string);
 static void (*regEndPoint)(string,int (*)(std::string,int,std::string,std::string),int (*)(std::string,int,std::string,std::string,std::string));
 static void (*closeEndPoint)(string);
 
-extern "C" {
+/*data get entity nigathan Inventory
+[09:18:33] [Server thread/INFO]: nigathan has the following entity data: []
+data get entity nigathan Inventory
+[09:18:51] [Server thread/INFO]: nigathan has the following entity data: [{Slot: 0b, id: "minecraft:dirt", Count: 1b}]*/
+int getPlayerInv(hmHandle &handle, hmHook hook, smatch args)
+{
+    string client = lower(args[1].str());
+    string inv = args[2].str();
+    ofstream file ("./halfMod/plugins/webgui/inventory/" + client,ios_base::trunc);
+    if (file.is_open())
+    {
+        file<<inv;
+        file.close();
+    }
+    handle.unhookPattern(hook.name);
+    return 0;
+}
 
 int onEndPointRecv(string endPoint, int socket, string ip, string client, string message)
 {
@@ -33,6 +51,8 @@ int onEndPointConnect(string endPoint, int socket, string ip, string client)
     return 0;
 }
 
+extern "C" {
+
 int onPluginStart(hmHandle &handle, hmGlobal *global)
 {
     recallGlobal(global);
@@ -44,6 +64,7 @@ int onPluginStart(hmHandle &handle, hmGlobal *global)
     handle.createTimer("writeBuf",1,"writeThreadBuffer");
     handle.createTimer("writeVar",10,"writeVariables");
     remove("./halfMod/plugins/webgui/console.log");
+    mkdirIf("./halfMod/plugins/webgui/inventory");
     for (auto it = global->extensions.begin(), ite = global->extensions.end();it != ite;++it)
     {
         if (it->getExtension() == "webgui")
@@ -57,6 +78,49 @@ int onPluginStart(hmHandle &handle, hmGlobal *global)
         }
     }
     return 1; // return error if the webgui extension isn't loaded
+}
+
+int onPluginsLoaded(hmHandle &handle)
+{
+    hmSendRaw("gamerule keepInventory");
+    return 0;
+}
+
+int onGamerule(hmHandle &handle, smatch args)
+{
+    if (args[1].str() == "keepInventory")
+    {
+        if (args[3].str() == "true")
+            keepInvSetting = true;
+        else
+            keepInvSetting = false;
+    }
+    return 0;
+}
+
+int onPlayerJoin(hmHandle &handle, smatch args)
+{
+    string client = args[1].str();
+    handle.hookPattern(client + "Inv","^\\[[0-9]{2}:[0-9]{2}:[0-9]{2}\\] \\[Server thread/INFO\\]: (" + client + ") has the following entity data: \\[(.*)\\]$",&getPlayerInv);
+    hmSendRaw("data get entity " + client + " Inventory");
+    return 0;
+}
+
+int onPlayerDeath(hmHandle &handle, smatch args)
+{
+    string client = args[1].str();
+    if (!keepInvSetting)
+    {
+        ofstream file ("./halfMod/plugins/webgui/inventory/" + lower(client),ios_base::trunc);
+        if (file.is_open())
+            file.close();
+    }
+    else
+    {
+        handle.hookPattern(client + "Inv","^\\[[0-9]{2}:[0-9]{2}:[0-9]{2}\\] \\[Server thread/INFO\\]: (" + client + ") has the following entity data: \\[(.*)\\]$",&getPlayerInv);
+        hmSendRaw("data get entity " + client + " Inventory");
+    }
+    return 0;
 }
 
 int onConsoleReceive(hmHandle &handle, smatch args)
@@ -114,7 +178,7 @@ int writeVariables(hmHandle &handle, string args)
     if (file.is_open())
     {
         file<<"#!/bin/bash";
-        file<<"\nmc_version=\""<<global->mcVer<<"\"\nhm_version=\""<<global->hmVer<<"\"\nhs_version=\""<<global->hsVer<<"\"\nworld_name="<<global->world;//"\nscreen_name=\""<<global->mcScreen<<"\"";
+        file<<"\nmc_version=\""<<global->mcVer<<"\"\nhm_version=\""<<global->hmVer<<"\"\nhs_version=\""<<global->hsVer<<"\"\nworld_name="<<global->world<<"\nscreen_name=\""<<global->mcScreen<<"\"";
         file<<"\nopt_quiet="<<(int)global->quiet<<"\nopt_verbose="<<(int)global->verbose<<"\nopt_debug="<<(int)global->debug<<"\nlog_method="<<global->logMethod;
         file<<"\nmax_players="<<global->maxPlayers<<"\nplayers_count="<<global->players.size()<<"\nadmins_count="<<global->admins.size()<<"\nplugins_count="<<global->pluginList.size()<<"\nconsole_filter_count="<<global->conFilter->size();
         string pname = "\nplayers_name=( ";
@@ -126,24 +190,24 @@ int writeVariables(hmHandle &handle, string args)
         string pdmsg = "\nplayers_death_msg=( ";
         for (auto it = global->players.begin(), ite = global->players.end();it != ite;++it)
         {
-            pname = pname + it->name + " ";
-            puuid = puuid + it->uuid + " ";
-            pip = pip + it->ip + " ";
-            pflag = pflag + to_string(it->flags) + " ";
-            pjoin = pjoin + to_string(it->join) + " ";
-            pdeath = pdeath + to_string(it->death) + " ";
-            if (it->deathmsg.size() < 1)
+            pname = pname + it->second.name + " ";
+            puuid = puuid + it->second.uuid + " ";
+            pip = pip + it->second.ip + " ";
+            pflag = pflag + to_string(it->second.flags) + " ";
+            pjoin = pjoin + to_string(it->second.join) + " ";
+            pdeath = pdeath + to_string(it->second.death) + " ";
+            if (it->second.deathmsg.size() < 1)
                 pdmsg += "null ";
             else
-                pdmsg = pdmsg + "\"" + it->deathmsg + "\" ";
+                pdmsg = pdmsg + "\"" + it->second.deathmsg + "\" ";
         }
         file<<pname<<")"<<puuid<<")"<<pip<<")"<<pflag<<")"<<pjoin<<")"<<pdeath<<")"<<pdmsg<<")";
         pname = "\nadmins_client=( ";
         pflag = "\nadmins_flags=( ";
         for (auto it = global->admins.begin(), ite = global->admins.end();it != ite;++it)
         {
-            pname = pname + it->client + " ";
-            pflag = pflag + to_string(it->flags) + " ";
+            pname = pname + it->second.client + " ";
+            pflag = pflag + to_string(it->second.flags) + " ";
         }
         file<<pname<<")"<<pflag<<")";
         puuid = "\nplugins_path=( ";

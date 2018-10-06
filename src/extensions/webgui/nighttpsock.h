@@ -42,7 +42,7 @@ std::string txt2amp(std::string in);
 std::string dec2hex(unsigned int n);
 std::string hexify(std::string in);
 std::string decify(std::string in);
-std::string wsMessage(std::string message, char fin_rsv_opcode = 129);
+std::string wsMessage(std::string message, char fin_rsv_opcode = char(129));
 
 #endif
 
