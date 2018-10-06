@@ -3,7 +3,7 @@
 #include "str_tok.h"
 using namespace std;
 
-#define VERSION "v0.1.1"
+#define VERSION "v0.1.2"
 
 static string threadBuffer;
 
@@ -114,7 +114,7 @@ int writeVariables(hmHandle &handle, string args)
     if (file.is_open())
     {
         file<<"#!/bin/bash";
-        file<<"\nmc_version=\""<<global->mcVer<<"\"\nhm_version=\""<<global->hmVer<<"\"\nhs_version=\""<<global->hsVer<<"\"\nworld_name="<<global->world<<"\nscreen_name=\""<<global->mcScreen<<"\"";
+        file<<"\nmc_version=\""<<global->mcVer<<"\"\nhm_version=\""<<global->hmVer<<"\"\nhs_version=\""<<global->hsVer<<"\"\nworld_name="<<global->world;//"\nscreen_name=\""<<global->mcScreen<<"\"";
         file<<"\nopt_quiet="<<(int)global->quiet<<"\nopt_verbose="<<(int)global->verbose<<"\nopt_debug="<<(int)global->debug<<"\nlog_method="<<global->logMethod;
         file<<"\nmax_players="<<global->maxPlayers<<"\nplayers_count="<<global->players.size()<<"\nadmins_count="<<global->admins.size()<<"\nplugins_count="<<global->pluginList.size()<<"\nconsole_filter_count="<<global->conFilter->size();
         string pname = "\nplayers_name=( ";
