@@ -13,7 +13,6 @@
 #include <time.h>
 #include <fstream>
 #include <iostream>
-#include <regex>
 #include <vector>
 #include "webgui_server.h"
 #include "nighttpsock.h"

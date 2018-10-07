@@ -3,7 +3,7 @@
 #include "str_tok.h"
 using namespace std;
 
-#define VERSION "v0.1.3"
+#define VERSION "v0.1.5"
 
 static string threadBuffer;
 
@@ -18,7 +18,7 @@ static void (*closeEndPoint)(string);
 [09:18:33] [Server thread/INFO]: nigathan has the following entity data: []
 data get entity nigathan Inventory
 [09:18:51] [Server thread/INFO]: nigathan has the following entity data: [{Slot: 0b, id: "minecraft:dirt", Count: 1b}]*/
-int getPlayerInv(hmHandle &handle, hmHook hook, smatch args)
+int getPlayerInv(hmHandle &handle, hmHook hook, rens::smatch args)
 {
     string client = lower(args[1].str());
     string inv = args[2].str();
@@ -86,7 +86,7 @@ int onPluginsLoaded(hmHandle &handle)
     return 0;
 }
 
-int onGamerule(hmHandle &handle, smatch args)
+int onGamerule(hmHandle &handle, rens::smatch args)
 {
     if (args[1].str() == "keepInventory")
     {
@@ -98,7 +98,7 @@ int onGamerule(hmHandle &handle, smatch args)
     return 0;
 }
 
-int onPlayerJoin(hmHandle &handle, smatch args)
+int onPlayerJoin(hmHandle &handle, rens::smatch args)
 {
     string client = args[1].str();
     handle.hookPattern(client + "Inv","^\\[[0-9]{2}:[0-9]{2}:[0-9]{2}\\] \\[Server thread/INFO\\]: (" + client + ") has the following entity data: \\[(.*)\\]$",&getPlayerInv);
@@ -106,7 +106,7 @@ int onPlayerJoin(hmHandle &handle, smatch args)
     return 0;
 }
 
-int onPlayerDeath(hmHandle &handle, smatch args)
+int onPlayerDeath(hmHandle &handle, rens::smatch args)
 {
     string client = args[1].str();
     if (!keepInvSetting)
@@ -123,7 +123,7 @@ int onPlayerDeath(hmHandle &handle, smatch args)
     return 0;
 }
 
-int onConsoleReceive(hmHandle &handle, smatch args)
+int onConsoleReceive(hmHandle &handle, rens::smatch args)
 {
     string buffer = strreplace(strreplace(args[0].str(),"<","&lt;"),">","&gt;");
     if (threadBuffer.size() > 0)
@@ -134,7 +134,7 @@ int onConsoleReceive(hmHandle &handle, smatch args)
     return 0;
 }
 
-int onGlobalMessage(hmHandle &handle, smatch args)
+int onGlobalMessage(hmHandle &handle, rens::smatch args)
 {
     string buffer = strreplace(strreplace(args[1].str(),"<","&lt;"),">","&gt;");
     if (threadBuffer.size() > 0)
@@ -145,7 +145,7 @@ int onGlobalMessage(hmHandle &handle, smatch args)
     return 0;
 }
 
-int onPrintMessage(hmHandle &handle, smatch args)
+int onPrintMessage(hmHandle &handle, rens::smatch args)
 {
     string buffer = strreplace(strreplace(args[1].str(),"<","&lt;"),">","&gt;");
     if (threadBuffer.size() > 0)
@@ -178,7 +178,7 @@ int writeVariables(hmHandle &handle, string args)
     if (file.is_open())
     {
         file<<"#!/bin/bash";
-        file<<"\nmc_version=\""<<global->mcVer<<"\"\nhm_version=\""<<global->hmVer<<"\"\nhs_version=\""<<global->hsVer<<"\"\nworld_name="<<global->world<<"\nscreen_name=\""<<global->mcScreen<<"\"";
+        file<<"\nmc_version=\""<<global->mcVer<<"\"\nhm_version=\""<<global->hmVer<<"\"\nhs_version=\""<<global->hsVer<<"\"\nworld_name="<<global->world;//<<"\nscreen_name=\""<<global->mcScreen<<"\"";
         file<<"\nopt_quiet="<<(int)global->quiet<<"\nopt_verbose="<<(int)global->verbose<<"\nopt_debug="<<(int)global->debug<<"\nlog_method="<<global->logMethod;
         file<<"\nmax_players="<<global->maxPlayers<<"\nplayers_count="<<global->players.size()<<"\nadmins_count="<<global->admins.size()<<"\nplugins_count="<<global->pluginList.size()<<"\nconsole_filter_count="<<global->conFilter->size();
         string pname = "\nplayers_name=( ";
@@ -238,7 +238,7 @@ int writeVariables(hmHandle &handle, string args)
     return 0;
 }
 
-int onPlayerConnect(hmHandle &handle, smatch args)
+int onPlayerConnect(hmHandle &handle, rens::smatch args)
 {
     string ip = args[2].str() + "=" + stripFormat(args[1].str()), line;
     bool write = true;

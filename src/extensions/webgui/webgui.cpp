@@ -9,7 +9,7 @@
 #include "str_tok.h"
 using namespace std;
 
-#define WEBGUI_VERSION "v0.1.3"
+#define WEBGUI_VERSION "v0.1.4"
 
 struct configButton
 {
